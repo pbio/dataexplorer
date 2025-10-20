@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Papa from 'papaparse';
-import { Container, Paper, Title, Textarea, Button, FileInput, Text, Stack, Group, Box } from '@mantine/core';
+import { Container, Paper, Title, Textarea, Button, FileInput, Text, Stack, Box } from '@mantine/core';
 import { IconUpload, IconSend } from '@tabler/icons-react';
 import VegaLiteChart from './VegaLiteChart';
 
@@ -10,12 +10,15 @@ interface ChatComponentProps {
   password: string;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type CsvRow = Record<string, any>;
+
 export default function ChatComponent({ password }: ChatComponentProps) {
   const [message, setMessage] = useState('');
   const [response, setResponse] = useState('');
   const [loading, setLoading] = useState(false);
   const [vegaSpec, setVegaSpec] = useState<object | null>(null);
-  const [csvData, setCsvData] = useState<any[] | null>(null);
+  const [csvData, setCsvData] = useState<CsvRow[] | null>(null);
   const [csvFile, setCsvFile] = useState<File | null>(null);
 
   const handleFileUpload = (file: File | null) => {
@@ -31,11 +34,11 @@ export default function ChatComponent({ password }: ChatComponentProps) {
       header: true,
       dynamicTyping: true,
       complete: (results) => {
-        setCsvData(results.data);
+        setCsvData(results.data as CsvRow[]);
       },
       error: (error) => {
         console.error('Error parsing CSV:', error);
-        alert('Error parsing CSV file');
+        alert('Error parsing CSV file:' + error);
       }
     });
   };
@@ -97,7 +100,7 @@ export default function ChatComponent({ password }: ChatComponentProps) {
         setResponse(`Error: ${data.error}`);
       }
     } catch (error) {
-      setResponse('Error: Failed to connect to the API');
+      setResponse('Error: Failed to connect to the API:' + error);
     } finally {
       setLoading(false);
     }
@@ -152,7 +155,7 @@ export default function ChatComponent({ password }: ChatComponentProps) {
         {response && (
           <Stack gap="md">
             <Paper shadow="sm" p="md" radius="md">
-              <Title order={3} mb="md">Claude's Response:</Title>
+              <Title order={3} mb="md">Claude&apos;s Response:</Title>
               <Text style={{ whiteSpace: 'pre-wrap' }}>{response}</Text>
             </Paper>
 
