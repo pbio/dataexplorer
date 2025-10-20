@@ -31,7 +31,7 @@ export default function PlotsPage() {
       const data = await res.json();
 
       if (data.success) {
-        const parsedPlots = data.data.map((plot: any) => ({
+        const parsedPlots = data.data.map((plot: SavedPlot & { plot_json: string | object }) => ({
           ...plot,
           plot_json: typeof plot.plot_json === 'string'
             ? JSON.parse(plot.plot_json)

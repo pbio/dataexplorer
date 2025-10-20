@@ -5,11 +5,6 @@ const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY,
 });
 
-interface Message {
-  role: 'user' | 'assistant';
-  content: string;
-}
-
 export async function POST(request: NextRequest) {
   try {
     const { message, csvData, password, conversationHistory, selectedColumns, maxRows } = await request.json();
