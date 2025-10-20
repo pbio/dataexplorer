@@ -1,36 +1,42 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+## Data Analysis Platform
+This is a quickbuild platform to generate plots from data files. 
+The app allows a user to upload one or more csv files and ask questions or generate plots from the data. Plots can be iterated on to modify them. 
+A user can also save a plot and view them. 
+
+
+## Efficient useage of LLM
+The app attempts to us the LLM in a efficient manner as these datasets can be very large.
+Based on the user's prompt and csv uploaded it will first try to decide which columns are useful and then make a second request to only send the columns that are needed. 
+There is also an input from the user to decide how many columns to use, so that they can first run smaller requests before using the full data set. 
 
 ## Getting Started
 
 First, run the development server:
 
 ```bash
-npm run dev
-# or
 yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+If running locally, please add the following to your .env.local
+ANTHROPIC_API_KEY = XXXX
+DEMO_PASSWORD= any_password_you_want
 
-## Learn More
+## Demo:
+Demo is available at https://dataexplorer-v2.vercel.app/
+I have set low token limits for claude to avoid getting charged too much. 
 
-To learn more about Next.js, take a look at the following resources:
+## Tech Stack:
+LLM: anthropics Claude version claude-sonnet-4-20250514
+JS framework: Next.js with typescript with node.js backend
+Component library: Mantine
+Ploting Library: VegaLite -> allows creating interactive plots using a json input. 
+DB hosting: Neon.tech postgres.db free tier with AWS; Only one table to save plots. 
+Site hosting: Vercel -> quick and easy to deploy directly from github. 
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Building the site:
+I used mostly claude code guide and make all important decisions for the development.
