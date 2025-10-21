@@ -352,7 +352,7 @@ export default function ChatComponent({ password }: ChatComponentProps) {
   return (
     <Container size="xl" py="md" style={{ height: '100vh', maxHeight: '100vh' }}>
       <Group justify="space-between" mb="md">
-        <Title order={1}>Data Analysis with Claude</Title>
+        <Title order={1}>Data Analysis App</Title>
         <Button
           leftSection={<IconChartBar size={16} />}
           onClick={() => router.push('/plots')}
