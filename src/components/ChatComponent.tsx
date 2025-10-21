@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import Papa from 'papaparse';
 import * as XLSX from 'xlsx';
 import { Container, Paper, Title, Textarea, Button, FileInput, Text, Stack, Box, ScrollArea, Switch, NumberInput, Group, Badge, Modal, TextInput } from '@mantine/core';
-import { IconUpload, IconSend, IconX, IconDeviceFloppy, IconChartBar } from '@tabler/icons-react';
+import { IconUpload, IconSend, IconX, IconDeviceFloppy, IconChartBar, IconArrowLeft, IconArrowRight } from '@tabler/icons-react';
 import { Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels';
 import { useRouter } from 'next/navigation';
 import VegaLiteChart from './VegaLiteChart';
@@ -31,6 +31,8 @@ export default function ChatComponent({ password }: ChatComponentProps) {
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
   const [vegaSpec, setVegaSpec] = useState<object | null>(null);
+  const [plotHistory, setPlotHistory] = useState<object[]>([]);
+  const [currentPlotIndex, setCurrentPlotIndex] = useState<number>(-1);
   const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>([]);
   const [conversationHistory, setConversationHistory] = useState<Message[]>([]);
   const [selectedColumns, setSelectedColumns] = useState<string[] | null>(null);
@@ -142,6 +144,24 @@ export default function ChatComponent({ password }: ChatComponentProps) {
     setUploadedFiles(prev => prev.filter(f => f.name !== fileName));
     if (uploadedFiles.length === 1) {
       setSelectedColumns(null);
+    }
+  };
+
+  const addPlotToHistory = (spec: object) => {
+    setPlotHistory(prev => [...prev, spec]);
+    setCurrentPlotIndex(prev => prev + 1);
+    setVegaSpec(spec);
+  };
+
+  const navigatePlotHistory = (direction: 'back' | 'forward') => {
+    if (direction === 'back' && currentPlotIndex > 0) {
+      const newIndex = currentPlotIndex - 1;
+      setCurrentPlotIndex(newIndex);
+      setVegaSpec(plotHistory[newIndex]);
+    } else if (direction === 'forward' && currentPlotIndex < plotHistory.length - 1) {
+      const newIndex = currentPlotIndex + 1;
+      setCurrentPlotIndex(newIndex);
+      setVegaSpec(plotHistory[newIndex]);
     }
   };
 
@@ -302,7 +322,7 @@ export default function ChatComponent({ password }: ChatComponentProps) {
             ]);
 
             if (spec) {
-              setVegaSpec(spec);
+              addPlotToHistory(spec);
             }
           }
         } else {
@@ -316,7 +336,7 @@ export default function ChatComponent({ password }: ChatComponentProps) {
           ]);
 
           if (spec) {
-            setVegaSpec(spec);
+            addPlotToHistory(spec);
           }
         }
       } else {
@@ -498,14 +518,36 @@ export default function ChatComponent({ password }: ChatComponentProps) {
                 <Paper shadow="sm" p="md" radius="md" style={{ height: '100%', overflow: 'auto' }}>
                   <Group justify="space-between" mb="md">
                     <Title order={3}>Current Visualization</Title>
-                    <Button
-                      leftSection={<IconDeviceFloppy size={16} />}
-                      onClick={() => setSaveModalOpened(true)}
-                      variant="light"
-                      size="sm"
-                    >
-                      Save Plot
-                    </Button>
+                    <Group gap="xs">
+                      <Button.Group>
+                        <Button
+                          leftSection={<IconArrowLeft size={16} />}
+                          onClick={() => navigatePlotHistory('back')}
+                          variant="light"
+                          size="sm"
+                          disabled={currentPlotIndex <= 0}
+                        >
+                          Back
+                        </Button>
+                        <Button
+                          rightSection={<IconArrowRight size={16} />}
+                          onClick={() => navigatePlotHistory('forward')}
+                          variant="light"
+                          size="sm"
+                          disabled={currentPlotIndex >= plotHistory.length - 1}
+                        >
+                          Forward
+                        </Button>
+                      </Button.Group>
+                      <Button
+                        leftSection={<IconDeviceFloppy size={16} />}
+                        onClick={() => setSaveModalOpened(true)}
+                        variant="light"
+                        size="sm"
+                      >
+                        Save Plot
+                      </Button>
+                    </Group>
                   </Group>
                   <Box>
                     <VegaLiteChart spec={vegaSpec} />

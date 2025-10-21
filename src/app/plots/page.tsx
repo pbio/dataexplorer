@@ -48,10 +48,6 @@ export default function PlotsPage() {
     }
   };
 
-  const formatDate = (timestamp: string) => {
-    return new Date(timestamp).toLocaleString();
-  };
-
   return (
     <Container size="xl" py="md">
       <Group justify="space-between" mb="lg">
@@ -85,10 +81,10 @@ export default function PlotsPage() {
               width: 300,
             },
             {
-              accessor: 'timestamp',
+              accessor: 'date',
               title: 'Created',
               width: 200,
-              render: (plot) => formatDate(plot.timestamp),
+              render: (plot) => plot.date,
             },
           ]}
           rowExpansion={{

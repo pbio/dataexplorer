@@ -37,7 +37,7 @@ export async function POST(request: NextRequest) {
     const { plot_name, plot_json } = await request.json();
 
     const query = `
-      INSERT INTO saved_plots (plot_name, plot_json, timestamp)
+      INSERT INTO saved_plots (plot_name, plot_json, date)
       VALUES ($1, $2, NOW())
       RETURNING *;
     `;

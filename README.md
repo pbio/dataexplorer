@@ -36,7 +36,3 @@ Component library: Mantine
 Ploting Library: VegaLite -> allows creating interactive plots using a json input. 
 DB hosting: Neon.tech postgres.db free tier with AWS; Only one table to save plots. 
 Site hosting: Vercel -> quick and easy to deploy directly from github. 
-
-
-## Building the site:
-I used mostly claude code guide and make all important decisions for the development.
